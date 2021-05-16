@@ -1,86 +1,90 @@
-import React, { Component } from 'react';
-import './App.css';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import TextField from '@material-ui/core/TextField';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
+import React, { Component } from "react";
+import "./App.css";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import { withStyles } from "@material-ui/core/styles";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 
 const styles = {
   list: {
-    width: '100%',
+    width: "100%",
     maxWidth: 360,
-    position: 'relative',
-    overflow: 'auto',
+    position: "relative",
+    overflow: "auto",
     maxHeight: 300,
   },
   text: {
     width: 400,
-    
   },
   select: {
-    width: 400
+    width: 400,
   },
   grid: {
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   paper: {
-    width: 700
-  }
-}
+    width: 700,
+  },
+};
 
 class App extends Component {
   state = {
-    text: '',
+    text: "",
     size: 1,
     results: [],
-    error: null
-  }
+    error: null,
+  };
 
   handleTextChange = (event) => {
     this.setState({ text: event.target.value });
-  }
+  };
 
   handleSelectChange = (event) => {
     this.setState({ size: event.target.value });
-  }
+  };
 
   handleSubmit = () => {
-    fetch("http://localhost:5000/bruteforce/", {
-      method: 'post',
+    fetch("/bruteforce/", {
+      method: "post",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         text: this.state.text,
-        size: this.state.size
-      })
+        size: this.state.size,
+      }),
     })
-    .then(res => res.json())
-    .then(
-      (result) => {
-        this.setState({
-          results: result
-        });
-      },
-      // Note: it's important to handle errors here
-      // instead of a catch() block so that we don't swallow
-      // exceptions from actual bugs in components.
-      (error) => {
-        this.setState({
-          error
-        });
-      }
-    )
-  }
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            results: result,
+          });
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          console.log(error);
+          this.setState({
+            error,
+          });
+        }
+      );
+  };
 
   render() {
     return (
@@ -92,8 +96,11 @@ class App extends Component {
             </Typography>
           </Toolbar>
         </AppBar>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
-        <Grid className="App-header" styles={{width:'100%'}} container>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
+        />
+        <Grid className="App-header" styles={{ width: "100%" }} container>
           <Grid item xs={12} className={this.props.classes.grid}>
             <TextField
               id="text"
@@ -111,8 +118,8 @@ class App extends Component {
                 className={this.props.classes.select}
                 value={this.state.size}
                 inputProps={{
-                  name: 'size',
-                  id: 'key-size',
+                  name: "size",
+                  id: "key-size",
                 }}
               >
                 <MenuItem value={1}>1</MenuItem>
@@ -127,21 +134,23 @@ class App extends Component {
           </Grid>
 
           <Grid item xs={12} className={this.props.classes.grid}>
-            <Button fullWidth onClick={this.handleSubmit}>Submit</Button>
+            <Button fullWidth onClick={this.handleSubmit}>
+              Submit
+            </Button>
           </Grid>
 
           <Paper className={this.props.classes.paper}>
             <List>
-            <ListSubheader>Suggested decryptions</ListSubheader>
-            {
-              this.state.results.map((item, index) => (
+              <ListSubheader>Suggested decryptions</ListSubheader>
+              {this.state.results.map((item, index) => (
                 <ListItem key={index}>
-                  <ListItemText>{item[0]} - {item[1]}</ListItemText>
+                  <ListItemText>
+                    {item[0]} - {item[1]}
+                  </ListItemText>
                 </ListItem>
-              ))
-            }
-          </List>
-        </Paper>
+              ))}
+            </List>
+          </Paper>
         </Grid>
       </div>
     );
